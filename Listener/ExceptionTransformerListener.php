@@ -3,7 +3,6 @@
 namespace Riper\Bundle\ExceptionTransformerBundle\Listener;
 
 use Riper\Bundle\ExceptionTransformerBundle\Resolver\ExceptionMappingResolver;
-use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
