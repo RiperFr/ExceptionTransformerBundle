@@ -1,0 +1,18 @@
+parameters :
+    riper_exception_mapping.shortcuts:
+            BadRequestHttpException: Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+            NotFoundHttpException: Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            ConflictHttpException: Symfony\Component\HttpKernel\Exception\ConflictHttpException
+            AccessDeniedHttpException: Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+            GoneHttpException: Symfony\Component\HttpKernel\Exception\GoneHttpException
+            LengthRequiredHttpException: Symfony\Component\HttpKernel\Exception\LengthRequiredHttpException
+            MethodNotAllowedHttpException: Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+            NotAcceptableHttpException: Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException
+            PreconditionFailedHttpException: Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException
+            PreconditionRequiredHttpException: Symfony\Component\HttpKernel\Exception\PreconditionRequiredHttpException
+            UnprocessableEntityHttpException: Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException
+            UnsupportedMediaTypeHttpException: Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException
+            ##Adding a new exception ? Please respect the constructor interface used by all existing exceptions.
+            ##Look at src/ExceptionTransformer/HttpExceptionTransformer.php::transform ($throw new $newException($exception->getMessage(), $exception);)
+    riper_exception_mapping.exception_map:
+            JMS\Serializer\Exception\Exception: BadRequestHttpException

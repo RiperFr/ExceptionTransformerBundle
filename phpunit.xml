@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit
+        backupGlobals               = "false"
+        backupStaticAttributes      = "false"
+        colors                      = "true"
+        convertErrorsToExceptions   = "true"
+        convertNoticesToExceptions  = "true"
+        convertWarningsToExceptions = "true"
+        processIsolation            = "false"
+        stopOnFailure               = "false"
+        syntaxCheck                 = "true"
+        bootstrap                   = "vendor/autoload.php"
+        timeoutForSmallTests        = "1"
+        timeoutForMediumTests       = "5"
+        timeoutForLargTests         = "10"
+        mapTestClassNameToCoveredClassName = "true"
+        >
+
+    <testsuites>
+        <testsuite name="riper-exception-transformer">
+            <directory>Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!--
+    <php>
+        <server name="KERNEL_DIR" value="/path/to/your/app/" />
+    </php>
+    -->
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true" addUncoveredFilesFromWhitelist="true">
+            <directory>src</directory>
+            <exclude>
+                <directory>Tests</directory>
+                <directory>Resources</directory>
+                <directory>Exceptions/</directory>
+                <directory>DependencyInjection</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
