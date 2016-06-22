@@ -6,7 +6,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class RiperCommonExceptionTransformerExtension extends Extension
+class RiperExceptionTransformerExtension extends Extension
 {
     /**
      * {@inheritDoc}
