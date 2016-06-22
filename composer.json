@@ -1,0 +1,15 @@
+{
+    "name": "riper/exception-transformer",
+    "description": "Bundle to transform exception before the kernel catch them",
+    "type": "symfony-bundle",
+    "keywords": ["kernel","exception","httpException","errorCode","Symfony"],
+    "homepage": "https://github.com/RiperFr/ExceptionTransformerBundle",
+    "license": "CC-BY-4.0",
+    "autoload": {
+        "psr-4": { "Riper\\Bundle\\ExceptionTransformerBundle\\": "" }
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony" : ">2.6"
+    }
+}
