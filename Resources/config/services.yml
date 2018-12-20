@@ -7,9 +7,9 @@ services:
     #The name of the service is referenced in the code. Caution if changed
     riper.exception_transformer.transformers.http_exception_transformer:
         class: Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\HttpExceptionTransformer
-        arguments : [ %riper_exception_mapping.shortcuts% ]
+        arguments : [ "%riper_exception_mapping.shortcuts%" ]
         calls :
-            - [ "addMap" , [ %riper_exception_mapping.exception_map% ] ]
+            - [ "addMap" , [ "%riper_exception_mapping.exception_map%" ] ]
         tags:
             - { name: riper.exception.transformer, namespace_scope: "" }
 
@@ -22,6 +22,6 @@ services:
 
 #    riper.error_handler.exception_to_http_exception_listener:
 #            class: Riper\Bundle\ErrorRendererBundle\Listener\ExceptionToHttpExceptionListener
-#            arguments : [ %riper_exception_mapping% ]
+#            arguments : [ "%riper_exception_mapping%" ]
 #            tags:
 #                - { name : kernel.event_subscriber }
