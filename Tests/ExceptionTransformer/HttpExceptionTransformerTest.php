@@ -98,7 +98,7 @@ class HttpExceptionTransformerTest extends \PHPUnit_Framework_TestCase
         $exception = null;
         try {
             $this->transformer->transform(new IncompatibleSourceException());
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $exception = $e;
         }
 
