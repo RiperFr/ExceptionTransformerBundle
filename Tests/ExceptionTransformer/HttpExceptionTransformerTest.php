@@ -2,28 +2,26 @@
 
 namespace Riper\Bundle\ExceptionTransformerBundle\Tests\ExceptionTransformer;
 
+use PHPUnit\Framework\TestCase;
+use Riper\Bundle\ExceptionTransformerBundle\Exceptions\HttpExceptionNotFound;
 use Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\HttpExceptionTransformer;
 use Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\ExpectedOneException;
+use Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\ExpectedTwoException;
 use Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\IncompatibleSourceException;
 use Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException;
 
-class HttpExceptionTransformerTest extends \PHPUnit_Framework_TestCase
+class HttpExceptionTransformerTest extends TestCase
 {
-
-    private $shortcuts
+    private array $shortcuts
         = array(
             'one'          => 'Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\ExpectedOneException',
             'two'          => 'Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\ExpectedTwoException',
             'Incompatible' => 'Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\IncompatibleHttpTransformerException',
         );
 
+    private HttpExceptionTransformer $transformer;
 
-    /**
-     * @var HttpExceptionTransformer
-     */
-    private $transformer;
-
-    public function setup()
+    protected function setup(): void
     {
         $map = array(
             'Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException'              => 'one',
@@ -36,34 +34,30 @@ class HttpExceptionTransformerTest extends \PHPUnit_Framework_TestCase
         $this->transformer->addMap($map);
     }
 
-    public function testIShouldHaveTheExceptionTransformedAndThrownWhenNamespacedExceptionIsGivenForTransformation()
+    public function testIShouldHaveTheExceptionTransformedAndThrownWhenNamespacedExceptionIsGivenForTransformation(): void
     {
-        $this->setExpectedException(
-            '\Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\ExpectedOneException'
-        );
+        $this->expectException(ExpectedOneException::class);
         $this->transformer->transform(new PouetException());
     }
 
-    public function testIShouldHaveTheExceptionTransformedAndThrownWhenGlobalNamespaceExceptionIsGivenForTransformation()
+    public function testIShouldHaveTheExceptionTransformedAndThrownWhenGlobalNamespaceExceptionIsGivenForTransformation(): void
     {
-        $this->setExpectedException(
-            '\Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\ExpectedTwoException'
-        );
+        $this->expectException(ExpectedTwoException::class);
         $this->transformer->transform(new \Exception());
     }
 
-    public function testIShouldHaveAnHttpNotFoundExceptionWhenShortcutDoesNotExist()
+    public function testIShouldHaveAnHttpNotFoundExceptionWhenShortcutDoesNotExist(): void
     {
         $map = array(
             'RuntimeException' => 'FortyTwo'
         );
 
         $this->transformer->addMap($map);
-        $this->setExpectedException('\Riper\Bundle\ExceptionTransformerBundle\Exceptions\HttpExceptionNotFound');
+        $this->expectException(HttpExceptionNotFound::class);
         $this->transformer->transform(new \RuntimeException());
     }
 
-    public function testIShouldNotHaveExceptionThrownIfOriginalExceptionIsNotInTheMap()
+    public function testIShouldNotHaveExceptionThrownIfOriginalExceptionIsNotInTheMap(): void
     {
         try {
             $this->transformer->transform(new \DomainException());
@@ -73,11 +67,12 @@ class HttpExceptionTransformerTest extends \PHPUnit_Framework_TestCase
                 'configuration is made to transform \DomainException'
             );
         }
+
+        $this->expectNotToPerformAssertions();
     }
 
-    public function testIShouldHaveTheTransformedExceptionMessageAndReferenceInTheNewlyCreatedException()
+    public function testIShouldHaveTheTransformedExceptionMessageAndReferenceInTheNewlyCreatedException(): void
     {
-
         $exception = null;
         $SourceException = new PouetException('Super exception');
         try {
@@ -85,15 +80,15 @@ class HttpExceptionTransformerTest extends \PHPUnit_Framework_TestCase
         } catch (ExpectedOneException $e) {
             $exception = $e;
         }
-        $this->assertTrue(
-            $exception->previous === $SourceException,
+        $this->assertSame(
+            $SourceException, $exception->previous,
             " HttpException must have a reference  to the old exception for tracability"
         );
         $this->assertEquals($exception->getMessage(), $SourceException->getMessage());
     }
 
 
-    public function testItTransformsOnlyToExceptionHavingConstructorTakingMessageAndPreviousException()
+    public function testItTransformsOnlyToExceptionHavingConstructorTakingMessageAndPreviousException(): void
     {
         $exception = null;
         try {
@@ -102,9 +97,6 @@ class HttpExceptionTransformerTest extends \PHPUnit_Framework_TestCase
             $exception = $e;
         }
 
-        $this->assertTrue(
-            ($exception !== null),
-            'An exception must be thrown when the exception constructor is not compatible'
-        );
+        $this->assertNotNull($exception, 'An exception must be thrown when the exception constructor is not compatible');
     }
 }

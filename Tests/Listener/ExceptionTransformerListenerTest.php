@@ -3,42 +3,40 @@
 
 namespace Riper\Bundle\ExceptionTransformerBundle\Tests\Listener;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Riper\Bundle\ExceptionTransformerBundle\Listener\ExceptionTransformerListener;
 use Riper\Bundle\ExceptionTransformerBundle\Resolver\ExceptionMappingResolver;
 use Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class ExceptionTransformerListenerTest extends \PHPUnit_Framework_TestCase
+class ExceptionTransformerListenerTest extends TestCase
 {
-
-
     /**
-     * @var ExceptionMappingResolver | \PHPUnit_Framework_MockObject_MockObject
+     * @var ExceptionMappingResolver | MockObject
      */
     public $resolver;
 
-    public function setup()
+    protected function setup(): void
     {
-        $this->resolver = $this->getMockBuilder(
-            '\Riper\Bundle\ExceptionTransformerBundle\Resolver\ExceptionMappingResolver'
-        )
+        $this->resolver = $this->getMockBuilder(ExceptionMappingResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
-
     }
 
-    public function testIShouldHaveTheListOfEventToListen()
+    public function testIShouldHaveTheListOfEventToListen(): void
     {
         $exceptionTransformerListener = new ExceptionTransformerListener($this->resolver);
 
         $events = $exceptionTransformerListener->getSubscribedEvents();
 
-        $this->assertTrue(array_key_exists(KernelEvents::EXCEPTION, $events));
+        $this->assertArrayHasKey(KernelEvents::EXCEPTION, $events);
 
     }
 
-    public function testIShouldHaveTheResolverCalledAndTheTransformedExceptionThrown()
+    public function testIShouldHaveTheResolverCalledAndTheTransformedExceptionThrown(): void
     {
         $exceptionTransformerListener = new ExceptionTransformerListener($this->resolver);
         $originalException = new \Exception('original');
@@ -47,7 +45,7 @@ class ExceptionTransformerListenerTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($originalException))
             ->will($this->throwException(new PouetException('Not original')));
 
-        $event = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+        $event = $this->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -64,9 +62,7 @@ class ExceptionTransformerListenerTest extends \PHPUnit_Framework_TestCase
             ->will(
                 $this->returnCallback(
                     function ($exception) use ($that) {
-                        if (get_class($exception)
-                            !== 'Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException'
-                        ) {
+                        if (get_class($exception) !== PouetException::class) {
                             $that->fail('The exception got is not the one expected. Got' . get_class($exception));
                         }
                     }
@@ -78,14 +74,14 @@ class ExceptionTransformerListenerTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testIShouldNotHaveAnyTransformationForNonMasterRequest()
+    public function testIShouldNotHaveAnyTransformationForNonMasterRequest(): void
     {
         $exceptionTransformerListener = new ExceptionTransformerListener($this->resolver);
         $originalException = new \Exception('original');
         $this->resolver->expects($this->never())
             ->method('resolve');
 
-        $event = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+        $event = $this->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -101,6 +97,5 @@ class ExceptionTransformerListenerTest extends \PHPUnit_Framework_TestCase
                 . $e->getMessage()
             );
         }
-
     }
 }
