@@ -33,12 +33,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    - name: Run test suite
-      run: vendor/bin/phpunit
   test:
 
     runs-on: ubuntu-latest
@@ -54,8 +48,6 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run test suite
       run: vendor/bin/phpunit
