@@ -1,4 +1,4 @@
-name: PHP BUILD&TEST
+name: PHP
 
 on:
   push:
@@ -32,6 +32,24 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
+
+
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    - name: Run test suite
+      run: vendor/bin/phpunit
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
