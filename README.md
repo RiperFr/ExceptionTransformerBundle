@@ -15,11 +15,11 @@ This is useful when you want to transform domain/business exception from your co
 
 ### Require the dependency in your composer.json
 
-For symfony >4
+For symfony >4 and php >=7.4
 
     "riper/exception-transformer" : "2.*"
 
-For symfony <4
+For symfony <4 and php <7.4
 
     "riper/exception-transformer" : "1.*"
 
