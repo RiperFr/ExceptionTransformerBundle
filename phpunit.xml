@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
 <phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
         backupGlobals               = "false"
         backupStaticAttributes      = "false"
         colors                      = "true"
@@ -10,12 +11,9 @@
         convertWarningsToExceptions = "true"
         processIsolation            = "false"
         stopOnFailure               = "false"
-        syntaxCheck                 = "true"
         bootstrap                   = "vendor/autoload.php"
         timeoutForSmallTests        = "1"
         timeoutForMediumTests       = "5"
-        timeoutForLargTests         = "10"
-        mapTestClassNameToCoveredClassName = "true"
         >
 
     <testsuites>
@@ -30,15 +28,18 @@
     </php>
     -->
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true" addUncoveredFilesFromWhitelist="true">
-            <directory>src</directory>
-            <exclude>
-                <directory>Tests</directory>
-                <directory>Resources</directory>
-                <directory>Exceptions/</directory>
-                <directory>DependencyInjection</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+    <coverage processUncoveredFiles="true" includeUncoveredFiles="true">
+        <include>
+            <directory>DependencyInjection</directory>
+            <directory>Exceptions/</directory>
+            <directory>ExceptionTransformer</directory>
+            <directory>Listener</directory>
+            <directory>Resolver</directory>
+        </include>
+        <exclude>
+            <directory>Tests</directory>
+            <directory>vendor/</directory>
+            <directory>Resources</directory>
+        </exclude>
+    </coverage>
 </phpunit>

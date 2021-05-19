@@ -2,38 +2,29 @@
 
 namespace Riper\Bundle\ExceptionTransformerBundle\Tests\Resolver;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\ExceptionTransformerInterface;
 use Riper\Bundle\ExceptionTransformerBundle\Resolver\ExceptionMappingResolver;
 use Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException;
 
-class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
+class ExceptionMappingResolverTest extends TestCase
 {
-
-
     /**
-     * @var ExceptionTransformerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ExceptionTransformerInterface|MockObject
      */
     private $transformer1;
     /**
-     * @var ExceptionTransformerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ExceptionTransformerInterface|MockObject
      */
     private $transformer2;
 
-    /**
-     * @var ExceptionMappingResolver|
-     */
-    private $resolver;
+    private ExceptionMappingResolver $resolver;
 
-    public function setup()
+    protected function setup(): void
     {
-
-        $this->transformer1 = $this->getMockBuilder(
-            '\Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\ExceptionTransformerInterface'
-        )->getMock();
-
-        $this->transformer2 = $this->getMockBuilder(
-            '\Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\ExceptionTransformerInterface'
-        )->getMock();
+        $this->transformer1 = $this->getMockBuilder(ExceptionTransformerInterface::class)->getMock();
+        $this->transformer2 = $this->getMockBuilder(ExceptionTransformerInterface::class)->getMock();
 
         $this->resolver = new ExceptionMappingResolver();
     }
@@ -50,11 +41,11 @@ class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
                 $this->throwException(new PouetException())
             );
 
-        $this->setExpectedException('\Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException');
+        $this->expectException(PouetException::class);
         $this->resolver->resolve($exceptionToTransform);
     }
 
-    public function testIShouldHaveOnlyTheFirstTransformerCalledWhenItTransformAnException()
+    public function testIShouldHaveOnlyTheFirstTransformerCalledWhenItTransformAnException(): void
     {
         $this->resolver->addExceptionTransformers('', $this->transformer1);
         $this->resolver->addExceptionTransformers('', $this->transformer2);
@@ -69,10 +60,9 @@ class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
         $this->transformer2->expects($this->never())
             ->method('transform');
 
-        $this->setExpectedException('\Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException');
+        $this->expectException(PouetException::class);
         $this->resolver->resolve($exceptionToTransform);
     }
-
 
     public function testIShouldHaveTheTwoTransformersCalledWhenTheFirstThrowTheOriginalException()
     {
@@ -93,11 +83,11 @@ class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
                 $this->throwException(new PouetException())
             );
 
-        $this->setExpectedException('\Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException');
+        $this->expectException(PouetException::class);
         $this->resolver->resolve($exceptionToTransform);
     }
 
-    public function testIShouldHaveTheTwoTransformersCalledWhenTheFirstDoesNotThrowAnything()
+    public function testIShouldHaveTheTwoTransformersCalledWhenTheFirstDoesNotThrowAnything(): void
     {
         $this->resolver->addExceptionTransformers('', $this->transformer1);
         $this->resolver->addExceptionTransformers('', $this->transformer2);
@@ -114,11 +104,11 @@ class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
                 $this->throwException(new PouetException())
             );
 
-        $this->setExpectedException('\Riper\Bundle\ExceptionTransformerBundle\Tests\Exceptions\PouetException');
+        $this->expectException(PouetException::class);
         $this->resolver->resolve($exceptionToTransform);
     }
 
-    public function testIShouldHaveOnlyTheTransformersThatMatchTheNamespaceScopeToBeCalled()
+    public function testIShouldHaveOnlyTheTransformersThatMatchTheNamespaceScopeToBeCalled(): void
     {
         $this->resolver->addExceptionTransformers('titi\toto', $this->transformer1);
         $this->resolver->addExceptionTransformers(
@@ -136,13 +126,14 @@ class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
         try {
             $this->resolver->resolve($exceptionToTransform);
         } catch (\Exception $e) {
-            if ($e !== $expectedException) {
-                $this->fail('The Exception thrown is not the one expected. got ' . get_class($e));
-            }
+            $this->assertSame($expectedException, $e);
+            return;
         }
+
+        $this->fail('Expected an exception to be thrown');
     }
 
-    public function testIShouldHaveNoTransformerCalledAtAllAndTheOriginalExceptionThrownWhenNoTransformerMatchScopeOfTheException()
+    public function testIShouldHaveNoTransformerCalledAtAllAndTheOriginalExceptionThrownWhenNoTransformerMatchScopeOfTheException(): void
     {
         $this->resolver->addExceptionTransformers('toto\titi', $this->transformer1);
         $this->resolver->addExceptionTransformers(
@@ -157,39 +148,39 @@ class ExceptionMappingResolverTest extends \PHPUnit_Framework_TestCase
         try {
             $this->resolver->resolve($exceptionToTransform);
         } catch (\Exception $e) {
-            if ($e !== $exceptionToTransform) {
-                $this->fail(
-                    'The Original exception is expected to be thrown, not a transformed one. got ' . get_class($e)
-                );
-            }
+            $this->assertSame(
+                $exceptionToTransform,
+                $e,
+                'The Original exception is expected to be thrown, not a transformed one. got ' . get_class($e)
+            );
+            return;
         }
 
+        $this->fail('An Exception should have been thrown');
     }
 
-    public function testIShouldHaveTheOriginalExceptionThrownIfNotTransformersAreRegistred()
+    public function testIShouldHaveTheOriginalExceptionThrownIfNotTransformersAreRegistred(): void
     {
         $exceptionToTransform = new PouetException('originalException');
 
         try {
             $this->resolver->resolve($exceptionToTransform);
         } catch (\Exception $e) {
-            if ($e !== $exceptionToTransform) {
-                $this->fail('The Original exception is expected to be thrown, not a transformed one');
-            }
+            $this->assertSame($exceptionToTransform, $e, 'The Original exception is expected to be thrown, not a transformed one');
+            return;
         }
+
+        $this->fail('An Exception should have been thrown');
     }
 
-
-    public function testICanHaveMultipleTransformerWithTheSameNamespaceScope()
+    public function testICanHaveMultipleTransformerWithTheSameNamespaceScope(): void
     {
-        $transformer1 = $this->getMockBuilder(
-            'Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\ExceptionTransformerInterface'
-        )->disableOriginalConstructor()
+        $transformer1 = $this->getMockBuilder(ExceptionTransformerInterface::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $transformer2 = $this->getMockBuilder(
-            'Riper\Bundle\ExceptionTransformerBundle\ExceptionTransformer\ExceptionTransformerInterface'
-        )->disableOriginalConstructor()
+        $transformer2 = $this->getMockBuilder(ExceptionTransformerInterface::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $transformer1->expects($this->once())
