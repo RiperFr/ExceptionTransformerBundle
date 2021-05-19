@@ -8,14 +8,18 @@ This is useful when you want to transform domain/business exception from your co
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/RiperFr/ExceptionTransformerBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/RiperFr/ExceptionTransformerBundle/?branch=master)
 ![License CC-BY-4](https://img.shields.io/badge/licence-CC--BY--4.0-blue.svg)
 ![php version](https://img.shields.io/badge/php->=5.3.5,%205.4,%205.5,%205.6,%207-blue.svg)
-![symfony version](https://img.shields.io/badge/symfony-2.6,%202.7,%202.8,%203.*-blue.svg)
+![symfony version](https://img.shields.io/badge/symfony-2.6,%202.7,%202.8,%203.*,%204.8-blue.svg)
 
-
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f72a264e-1e57-4973-b953-8fe3465792e9/big.png)](https://insight.sensiolabs.com/projects/f72a264e-1e57-4973-b953-8fe3465792e9)
 
 ## Usage
 
 ### Require the dependency in your composer.json
+
+For symfony >4
+
+    "riper/exception-transformer" : "2.*"
+
+For symfony <4
 
     "riper/exception-transformer" : "1.*"
 
